@@ -21,3 +21,6 @@ vendor/
 go.work
 
 .vscode/
+sessions
+pgadmin4.db
+db_backup
