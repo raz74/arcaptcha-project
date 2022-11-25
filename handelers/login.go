@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"Arc/model"
+	"Arc/repository"
 
 	"github.com/labstack/echo"
-
-	"gorm.io/gorm"
 )
 
-var Db *gorm.DB
 
 func Login(c echo.Context) error {
 	var request model.LoginRequest
@@ -24,7 +22,7 @@ func Login(c echo.Context) error {
 
 	var user model.User
 	fmt.Printf("%+v\n", user)
-	Db.Where("name = ?", request.Username).First(&user)
+	repository.Db.Where("name = ?", request.Username).First(&user)
 	fmt.Printf("%+v\n", user)
 
 
