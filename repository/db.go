@@ -14,8 +14,9 @@ func Initialize() error {
 	Db = database
 
 	if err != nil {
-		println(err)
-		return err
+		fmt.Println(err.Error())
+		panic("failed to connect database")
+		// return err
 	}
 	Db.AutoMigrate(&model.User{})
 	return nil
