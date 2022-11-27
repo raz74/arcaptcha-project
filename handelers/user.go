@@ -5,7 +5,6 @@ import (
 	"Arc/repository"
 	"Arc/handelers/request"
 	"net/http"
-	"time"
 	"github.com/labstack/echo"
 )
 
@@ -14,7 +13,7 @@ func GetAllUsers(c echo.Context) error {
 	err := repository.Db.Find(&users)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, handelers.NewHTTPEror(http.StatusBadRequest, "Bad request"))
+		return echo.ErrBadRequest
 	}
 
 	return c.JSON(http.StatusOK, users)
@@ -27,11 +26,7 @@ func GetUser(c echo.Context) error {
 	err := repository.Db.Where("id = ?", id).Find(&user)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, handelers.HTTPError{
-			Status: http.StatusBadRequest,
-			Msg:    "Bad request",
-			Date:   time.Now(),
-		})
+		return echo.ErrBadRequest
 	}
 
 	return c.JSON(http.StatusOK, user)
@@ -41,11 +36,7 @@ func GetUser(c echo.Context) error {
 func UpdateUser(c echo.Context) error {
 	var req handelers.UserRequest
 	if err:= c.Bind(&req) ; err != nil {
-		return c.JSON(http.StatusBadRequest, handelers.HTTPError{
-			Status: http.StatusBadRequest,
-			Msg:    "Bad request",
-			Date:   time.Now(),
-		})
+		return echo.ErrBadRequest
 	}
 
 	id := c.Param("id")
@@ -56,11 +47,7 @@ func UpdateUser(c echo.Context) error {
 	user.Email = req.Email
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, handelers.HTTPError{
-			Status: http.StatusBadRequest,
-			Msg:    "Bad request",
-			Date:   time.Now(),
-		})
+		return echo.ErrBadRequest
 	}
 	repository.Db.Save(&user)
 	return c.JSON(http.StatusOK, id+"user successfully updated")
@@ -73,11 +60,7 @@ func DeleteUser(c echo.Context) error {
 	err := repository.Db.Where("id = ?", id).Find(&user).Error
 
 	if err != nil {
-		return c.JSON(http.StatusNotFound, handelers.HTTPError{
-			Status: http.StatusNotFound,
-			Msg:    "user not found",
-			Date:   time.Now(),
-		})
+		return echo.ErrNotFound
 	}
 
 	repository.Db.Delete(&user)
@@ -89,11 +72,7 @@ func DeleteUser(c echo.Context) error {
 func CreateUser(c echo.Context) error {
 	var req handelers.UserRequest
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, handelers.HTTPError{
-			Status: http.StatusBadRequest,
-			Msg:    "Invalid type of request",
-			Date:   time.Now(),
-		})
+		return echo.ErrBadRequest
 	}
 	NewUser:= &model.User{
 		Password: req.Password,
