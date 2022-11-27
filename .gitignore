@@ -24,3 +24,4 @@ go.work
 sessions
 pgadmin4.db
 db_backup
+.env
