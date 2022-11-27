@@ -3,6 +3,7 @@ package handelers
 import (
 	"Arc/model"
 	"Arc/repository"
+	"Arc/handelers/request"
 	"net/http"
 	"time"
 	"github.com/labstack/echo"
@@ -13,7 +14,7 @@ func GetAllUsers(c echo.Context) error {
 	err := repository.Db.Find(&users)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, model.NewHTTPEror(http.StatusBadRequest, "Bad request"))
+		return c.JSON(http.StatusBadRequest, handelers.NewHTTPEror(http.StatusBadRequest, "Bad request"))
 	}
 
 	return c.JSON(http.StatusOK, users)
@@ -26,7 +27,7 @@ func GetUser(c echo.Context) error {
 	err := repository.Db.Where("id = ?", id).Find(&user)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, model.HTTPError{
+		return c.JSON(http.StatusBadRequest, handelers.HTTPError{
 			Status: http.StatusBadRequest,
 			Msg:    "Bad request",
 			Date:   time.Now(),
@@ -38,35 +39,31 @@ func GetUser(c echo.Context) error {
 
 
 func UpdateUser(c echo.Context) error {
-	var req model.UserRequest
+	var req handelers.UserRequest
 	if err:= c.Bind(&req) ; err != nil {
-		return c.JSON(http.StatusBadRequest, model.HTTPError{
+		return c.JSON(http.StatusBadRequest, handelers.HTTPError{
 			Status: http.StatusBadRequest,
 			Msg:    "Bad request",
 			Date:   time.Now(),
 		})
 	}
 
-	name := c.Param("name")
-	email := c.Param("email")
+	id := c.Param("id")
 
-	user := model.User{
-        Name: req.Name,
-		Email: req.Email,
-	}
+	user := model.User{}
 
-	err := repository.Db.Where("name=?", name).Find(&user)
-	user.Email = email
+	err := repository.Db.Where("id=?", id).Find(&user)
+	user.Email = req.Email
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, model.HTTPError{
+		return c.JSON(http.StatusBadRequest, handelers.HTTPError{
 			Status: http.StatusBadRequest,
 			Msg:    "Bad request",
 			Date:   time.Now(),
 		})
 	}
 	repository.Db.Save(&user)
-	return c.JSON(http.StatusOK, name+"user successfully updated")
+	return c.JSON(http.StatusOK, id+"user successfully updated")
 }
 
 
@@ -76,7 +73,7 @@ func DeleteUser(c echo.Context) error {
 	err := repository.Db.Where("id = ?", id).Find(&user).Error
 
 	if err != nil {
-		return c.JSON(http.StatusNotFound, model.HTTPError{
+		return c.JSON(http.StatusNotFound, handelers.HTTPError{
 			Status: http.StatusNotFound,
 			Msg:    "user not found",
 			Date:   time.Now(),
@@ -90,9 +87,9 @@ func DeleteUser(c echo.Context) error {
 
 
 func CreateUser(c echo.Context) error {
-	var req model.UserRequest
+	var req handelers.UserRequest
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, model.HTTPError{
+		return c.JSON(http.StatusBadRequest, handelers.HTTPError{
 			Status: http.StatusBadRequest,
 			Msg:    "Invalid type of request",
 			Date:   time.Now(),

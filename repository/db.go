@@ -19,6 +19,7 @@ func Initialize() error {
 		// return err
 	}
 	Db.AutoMigrate(&model.User{})
+	Db.AutoMigrate(&model.Admin{})
 	return nil
 }
 
