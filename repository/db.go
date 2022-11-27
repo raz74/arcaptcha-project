@@ -3,9 +3,11 @@ package repository
 import (
 	"Arc/model"
 	"fmt"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
+
 var Db *gorm.DB
 
 func Initialize() error {
@@ -23,10 +25,7 @@ func Initialize() error {
 	return nil
 }
 
+func CreateAdmin(admin *model.Admin) error {
+	return Db.Create(admin).Error
 
-// create user
-func CreateUser(user *model.User) error {
-	result := Db.Create(user)
-	fmt.Printf("%+v\n", result)
-	return nil
 }
