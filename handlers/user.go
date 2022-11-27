@@ -1,16 +1,18 @@
-package handelers
+package handlers
 
 import (
+	"Arc/authentication"
+	"Arc/handlers/request"
 	"Arc/model"
 	"Arc/repository"
-	"Arc/handelers/request"
 	"net/http"
+
 	"github.com/labstack/echo"
 )
 
 func GetAllUsers(c echo.Context) error {
 	var users []model.User
-	err := repository.Db.Find(&users)
+	err := repository.Db.Find(&users).Error
 
 	if err != nil {
 		return echo.ErrBadRequest
@@ -20,10 +22,14 @@ func GetAllUsers(c echo.Context) error {
 }
 
 func GetUser(c echo.Context) error {
+	if err := authentication.ValidateToken(c); err != nil {
+		return err
+	}
+
 	var user model.User
-	// User ID from path `users/:id`
+
 	id := c.Param("id")
-	err := repository.Db.Where("id = ?", id).Find(&user)
+	err := repository.Db.Where("id = ?", id).Find(&user).Error
 
 	if err != nil {
 		return echo.ErrBadRequest
@@ -32,10 +38,9 @@ func GetUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
-
 func UpdateUser(c echo.Context) error {
-	var req handelers.UserRequest
-	if err:= c.Bind(&req) ; err != nil {
+	var req request.SignupRequest
+	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
 
@@ -43,7 +48,7 @@ func UpdateUser(c echo.Context) error {
 
 	user := model.User{}
 
-	err := repository.Db.Where("id=?", id).Find(&user)
+	err := repository.Db.Where("id=?", id).Find(&user).Error
 	user.Email = req.Email
 
 	if err != nil {
@@ -52,7 +57,6 @@ func UpdateUser(c echo.Context) error {
 	repository.Db.Save(&user)
 	return c.JSON(http.StatusOK, id+"user successfully updated")
 }
-
 
 func DeleteUser(c echo.Context) error {
 	var user model.User
@@ -68,22 +72,20 @@ func DeleteUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, id+"Deleted")
 }
 
-
 func CreateUser(c echo.Context) error {
-	var req handelers.UserRequest
+	var req request.CreateUserRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
-	NewUser:= &model.User{
-		Password: req.Password,
-		Name: req.Name,
-		ID : req.ID,
-		Email: req.Email,
-		Phone: req.Phone,
+	NewUser := &model.User{
+		Password:     req.Password,
+		Name:         req.Name,
+		ID:           req.ID,
+		Email:        req.Email,
+		Phone:        req.Phone,
 		Company_name: req.Company_name,
-		Job_title: req.Job_title,
-		Active: req.Active,	
+		Job_title:    req.Job_title,
+		Active:       req.Active,
 	}
 	return c.JSON(http.StatusOK, NewUser)
-}	
-	
+}

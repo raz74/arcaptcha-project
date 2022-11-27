@@ -1,13 +1,11 @@
-package handelers
+package request
 
 import "time"
 
-
-type UserRequest struct {
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	ID       int    `json:"id"`
-	// Role                     Role      `json:"role"`
+type CreateUserRequest struct {
+	Password     string `json:"password"`
+	Name         string `json:"name"`
+	ID           int    `json:"id"`
 	Email        string `jason:"email"`
 	Phone        string `json:"phone"`
 	Company_name string `json:"company_name"`
@@ -15,10 +13,16 @@ type UserRequest struct {
 	Active       bool   `json:"active"`
 }
 
+type SignupRequest struct {
+	Password string `json:"password" validate:"required"`
+	Name     string `json:"name"`
+	Email    string `jason:"email"`
+	Phone    string `json:"phone"`
+}
+
 type LoginRequest struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
-	ID       int    `json:"id"`
 }
 
 type HTTPError struct {
@@ -34,5 +38,3 @@ func NewHTTPEror(status int, msg string) HTTPError {
 		Date:   time.Now(),
 	}
 }
-
-// build a constructor  for the error
