@@ -1,9 +1,9 @@
 package handelers
 
 import (
-
 	"Arc/model"
 	"Arc/repository"
+	"fmt"
 
 	"github.com/labstack/echo"
 
@@ -15,8 +15,13 @@ func Signup(c echo.Context) error {
 	var req model.UserRequest
 	c.Bind(&req)
 
+	if err := c.Bind(req); err != nil {
+		fmt.Println(err.Error())
+		panic("failed to signup")
+	}
+
 	user := model.User{
-		Name: req.Username,
+		Name: req.Name,
 		Password: req.Password,
 		// Email:    req.Email,
 	}

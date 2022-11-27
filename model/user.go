@@ -6,7 +6,6 @@ import (
 )
 
 type User struct {
-	Username                 string    `json:"username"`
 	Password                 string    `json:"password"`
 	Name                     string    `json:"name"`
 	ID                       int       `json:"id"`
@@ -24,13 +23,19 @@ type User struct {
 
 
 type UserRequest struct {
-	Username string `json:"username"`
+	Name string `json:"name"`
 	Password string `json:"password"`
 	// Email    string `json:"email"`
 }
 
 
 type LoginRequest struct {
-	Username string `json:"username"`
+	Name string `json:"name"`
 	Password string `json:"password"`
+}
+
+type ErrorHandeling struct {
+	Status int `json:"status"`
+	Msg string `json:"massage"`
+	Date time.Time `json:"date"`
 }
