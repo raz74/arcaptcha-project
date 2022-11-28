@@ -4,7 +4,10 @@ import (
 	"Arc/handlers"
 	"Arc/model"
 	"Arc/repository"
+	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -12,12 +15,17 @@ import (
 func main() {
 	repository.Initialize()
 	e := echo.New()
-	e.POST("/signup", handlers.Signup)
-	e.POST("/login", handlers.Login)
+	e.POST("/admmin/signup", handlers.Signup)
+	e.POST("/admin/login", handlers.Login)
+
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Println("Error loading environment")
+	}
 
 	config := middleware.JWTConfig{
 		Claims:     &model.JwtCustomClimes{},
-		SigningKey: []byte("secret"),
+		SigningKey: []byte(os.Getenv("SECRET")),
 	}
 
 	userGroup := e.Group("/users")

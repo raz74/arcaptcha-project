@@ -2,12 +2,16 @@ package authentication
 
 import (
 	"Arc/model"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 )
 
+var _ = godotenv.Load(".env")
+var secret = []byte(os.Getenv("SECRET"))
 
 func GenerateToken(id int) (string, error) {
 	expirationTime := time.Now().Add(24 * 7 * time.Hour)
@@ -19,7 +23,7 @@ func GenerateToken(id int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	t, err := token.SignedString([]byte("secret"))
+	t, err := token.SignedString(secret)
 	if err != nil {
 		return "", err
 	}
