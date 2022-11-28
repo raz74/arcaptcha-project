@@ -30,11 +30,14 @@ func main() {
 
 	userGroup := e.Group("/users")
 	userGroup.Use(middleware.JWTWithConfig(config))
-
+	
 	userGroup.GET("/", handlers.GetAllUsers)
 	userGroup.GET("/:id", handlers.GetUser)
+	userGroup.POST("/", handlers.CreateUser)
 	userGroup.PUT("/:id", handlers.UpdateUser)
 	userGroup.DELETE("/:id", handlers.DeleteUser)
+	
+	e.POST("/website", handlers.CreateWebsite)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

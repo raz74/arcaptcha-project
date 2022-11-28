@@ -77,15 +77,19 @@ func CreateUser(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
+	
 	NewUser := &model.User{
 		Password:     req.Password,
 		Name:         req.Name,
-		ID:           req.ID,
 		Email:        req.Email,
 		Phone:        req.Phone,
 		Company_name: req.Company_name,
 		Job_title:    req.Job_title,
 		Active:       req.Active,
+	}
+	err:= repository.Db.Create(&NewUser).Error
+	if err != nil {
+		return echo.ErrBadRequest
 	}
 	return c.JSON(http.StatusOK, NewUser)
 }
