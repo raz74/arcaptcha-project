@@ -27,6 +27,7 @@ func Initialize() error {
 	}
 	Db.AutoMigrate(&model.User{})
 	Db.AutoMigrate(&model.Admin{})
+	Db.AutoMigrate(&model.WebSite{})
 	return nil
 }
 

@@ -5,7 +5,6 @@ import "time"
 type CreateUserRequest struct {
 	Password     string `json:"password"`
 	Name         string `json:"name" validate:"required len gt 2"`
-	ID           int    `json:"id"`
 	Email        string `jason:"email" validate:"required,email"`
 	Phone        string `json:"phone" validate:"required,phone eq 11"`
 	Company_name string `json:"company_name"`
