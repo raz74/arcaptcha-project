@@ -2,24 +2,28 @@ package handlers
 
 import (
 	"Arc/model"
-	"net/http"
 	"Arc/repository"
+	"net/http"
+
 	"github.com/labstack/echo"
 )
 
- func CreateWebsite (c echo.Context) error {
+func CreateWebsite(c echo.Context) error {
 	var req model.CreateWebsiteRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
-	
-	NewWebSite := &model.WebSite{
-		User_Id: req.User_Id,
-		Site_Key: req.Site_Key,
-		Secret_Key: req.Secret_Key,
-		Label: req.Label,
+
+	NewWebSite := &model.Website{
+		UserId:    req.UserId,
+		SiteKey:   req.SiteKey,
+		SecretKey: req.SecretKey,
+		Label:     req.Label,
+		WebsiteV1: model.WebsiteV1{
+			Level: req.Level,
+		},
 	}
-	err:= repository.Db.Create(&NewWebSite).Error
+	err := repository.Db.Create(&NewWebSite).Error
 	if err != nil {
 		return echo.ErrBadRequest
 	}

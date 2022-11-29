@@ -17,4 +17,5 @@ type User struct {
 	Subscribe_notifications bool      `json:"subscribe_notifications"`
 	CreatedAt               time.Time `json:"created_at"`
 	UpdatedAt               time.Time `json:"updated_at"`
+	WebSites                []Website
 }
