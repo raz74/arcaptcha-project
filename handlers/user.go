@@ -32,7 +32,7 @@ func GetUser(c echo.Context) error {
 	err := repository.Db.Where("id = ?", id).Find(&user).Error
 
 	if err != nil {
-		return echo.ErrBadRequest
+		return echo.ErrNotFound
 	}
 
 	return c.JSON(http.StatusOK, user)
@@ -47,13 +47,12 @@ func UpdateUser(c echo.Context) error {
 	id := c.Param("id")
 
 	user := model.User{}
-
+	
 	err := repository.Db.Where("id=?", id).Find(&user).Error
-	user.Email = req.Email
-
 	if err != nil {
 		return echo.ErrBadRequest
 	}
+	user.Email = req.Email
 	repository.Db.Save(&user)
 	return c.JSON(http.StatusOK, id+"user successfully updated")
 }
@@ -61,9 +60,8 @@ func UpdateUser(c echo.Context) error {
 func DeleteUser(c echo.Context) error {
 	var user model.User
 	id := c.Param("id")
-	err := repository.Db.Where("id = ?", id).Find(&user).Error
-
-	if err != nil {
+	result := repository.Db.Where("id = ?", id).First(&user)
+	if result.Error != nil {
 		return echo.ErrNotFound
 	}
 
@@ -77,7 +75,7 @@ func CreateUser(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
-	
+
 	NewUser := &model.User{
 		Password:     req.Password,
 		Name:         req.Name,
@@ -87,7 +85,7 @@ func CreateUser(c echo.Context) error {
 		Job_title:    req.Job_title,
 		Active:       req.Active,
 	}
-	err:= repository.Db.Create(&NewUser).Error
+	err := repository.Db.Create(&NewUser).Error
 	if err != nil {
 		return echo.ErrBadRequest
 	}
