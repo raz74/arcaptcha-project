@@ -27,8 +27,8 @@ func main() {
 		Claims:     &model.JwtCustomClimes{},
 		SigningKey: []byte(os.Getenv("SECRET")),
 	}
-
 	userGroup := e.Group("/users")
+	websiteGroup := e.Group("/website")
 	userGroup.Use(middleware.JWTWithConfig(config))
 	
 	userGroup.GET("/", handlers.GetAllUsers)
@@ -37,7 +37,10 @@ func main() {
 	userGroup.PUT("/:id", handlers.UpdateUser)
 	userGroup.DELETE("/:id", handlers.DeleteUser)
 	
-	e.POST("/website", handlers.CreateWebsite)
-
+	websiteGroup.POST("/", handlers.CreateWebsite)
+	websiteGroup.GET("/", handlers.GetAllWebsites)
+	websiteGroup.GET("/:id", handlers.GetWebsite)
+	websiteGroup.PUT("/:id", handlers.UpdateWebsite)
+	websiteGroup.DELETE("/:id", handlers.DeleteWebsite)
 	e.Logger.Fatal(e.Start(":3000"))
 }

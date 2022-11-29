@@ -30,3 +30,56 @@ func CreateWebsite(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, NewWebSite)
 }
+
+func GetAllWebsites(c echo.Context) error {
+	var websites []model.Website
+	err := repository.Db.Find(&websites).Error
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	return c.JSON(http.StatusOK, websites)
+}
+
+func GetWebsite(c echo.Context) error {
+	var website model.Website
+
+	id := c.Param("id")
+	result := repository.Db.Where("id = ?", id).First(&website)
+	if result.Error != nil {
+		return echo.ErrNotFound
+	}
+	return c.JSON(http.StatusOK, website)
+}
+
+func UpdateWebsite(c echo.Context) error {
+	var req model.UpdateWebsiteRequest
+
+	if err := c.Bind(&req); err != nil {
+		return echo.ErrBadRequest
+	}
+	var website model.Website
+
+	id := c.Param("id")
+	result := repository.Db.Where("id = ?", id).First(&website)
+	if result.Error != nil {
+		return echo.ErrNotFound
+	}
+
+	website.SecretKey =req.SecretKey
+	website.Label = req.Label
+	website.SiteKey = req.SiteKey
+	
+	repository.Db.Save(&website)
+	return c.JSON(http.StatusOK, website)
+}
+
+func DeleteWebsite(c echo.Context) error {
+	var website model.Website
+	id := c.Param("id")
+	result := repository.Db.Where("id = ?", id).First(&website)
+	if result.Error != nil {
+		return echo.ErrNotFound
+	}
+	repository.Db.Delete(&website)
+	return c.JSON(http.StatusOK, id+" deleted")
+}

@@ -35,3 +35,13 @@ type CreateWebsiteRequest struct {
 	FingerPrint bool   `json:"fingerprint"`
 	Brand       bool   `json:"brand"`
 }
+
+
+type UpdateWebsiteRequest struct {
+	UserId     int       `json:"user_id"`
+	SiteKey    string    `json:"site_key"`
+	SecretKey  string    `json:"secret_key"`
+	Label      string    `json:"label"`
+	Alert      bool      `json:"alert"`
+	Subdomain  bool      `json:"subdomain"`
+}
