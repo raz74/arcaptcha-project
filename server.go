@@ -27,20 +27,29 @@ func main() {
 		Claims:     &model.JwtCustomClimes{},
 		SigningKey: []byte(os.Getenv("SECRET")),
 	}
-	userGroup := e.Group("/users")
-	websiteGroup := e.Group("/website")
-	userGroup.Use(middleware.JWTWithConfig(config))
+
+	addUserHandlers(e, config)
+	addWebSiteHandlers(e, config)
 	
-	userGroup.GET("/", handlers.GetAllUsers)
-	userGroup.GET("/:id", handlers.GetUser)
-	userGroup.POST("/", handlers.CreateUser)
-	userGroup.PUT("/:id", handlers.UpdateUser)
-	userGroup.DELETE("/:id", handlers.DeleteUser)
-	
-	websiteGroup.POST("/", handlers.CreateWebsite)
-	websiteGroup.GET("/", handlers.GetAllWebsites)
-	websiteGroup.GET("/:id", handlers.GetWebsite)
-	websiteGroup.PUT("/:id", handlers.UpdateWebsite)
-	websiteGroup.DELETE("/:id", handlers.DeleteWebsite)
 	e.Logger.Fatal(e.Start(":3000"))
+}
+
+
+func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
+	gp := e.Group("/users")
+	gp.Use(middleware.JWTWithConfig(config))
+	gp.GET("/", handlers.GetAllUsers)
+	gp.GET("/:id", handlers.GetUser)
+	gp.POST("/", handlers.CreateUser)
+	gp.PUT("/:id", handlers.UpdateUser)
+	gp.DELETE("/:id", handlers.DeleteUser)
+}
+
+func addWebSiteHandlers(e *echo.Echo, config middleware.JWTConfig) {
+	gp := e.Group("/website")
+	gp.POST("/", handlers.CreateWebsite)
+	gp.GET("/", handlers.GetAllWebsites)
+	gp.GET("/:id", handlers.GetWebsite)
+	gp.PUT("/:id", handlers.UpdateWebsite)
+	gp.DELETE("/:id", handlers.DeleteWebsite)
 }
