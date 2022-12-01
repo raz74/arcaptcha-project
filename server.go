@@ -28,6 +28,7 @@ func main() {
 		SigningKey: []byte(os.Getenv("SECRET")),
 	}
 
+	e.Use(middleware.JWTWithConfig(config))
 	addUserHandlers(e, config)
 	addWebSiteHandlers(e, config)
 	addPlanHanders(e, config)
@@ -38,7 +39,7 @@ func main() {
 
 func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp := e.Group("/users")
-	gp.Use(middleware.JWTWithConfig(config))
+	// gp.Use(middleware.JWTWithConfig(config))
 	gp.GET("/", handlers.GetAllUsers)
 	gp.GET("/:id", handlers.GetUser)
 	gp.POST("/", handlers.CreateUser)

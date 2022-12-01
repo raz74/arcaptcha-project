@@ -16,6 +16,6 @@ type UserPlan struct {
 	ID     int       `json:"id" gorm:"autoIncrement"`
 	UserID int       `gorm:"primaryKey"`
 	PlanID int       `gorm:"primaryKey"`
-	ExTime time.Time `json:"ex_Time"`
+	ExTime time.Time `json:"ex_time"`
 	gorm.Model
 }

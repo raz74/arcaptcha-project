@@ -1,10 +1,11 @@
 package handlers
 
 import (
+	"Arc/handlers/request"
 	"Arc/model"
 	"Arc/repository"
-	"Arc/handlers/request"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo"
 )
@@ -37,8 +38,8 @@ func GetUserPlan(c echo.Context) error {
 	var userPlan model.UserPlan
 
 	id := c.Param("user_id")
-	result := repository.Db.Where("user_id = ?", id).First(&userPlan)
-	if result.Error != nil {
+	result := repository.Db.Where("user_id = ? AND ex_time >= ?" , id, time.Now()).Find(&userPlan)
+	if result.RowsAffected == 0 {
 		return echo.ErrNotFound
 	}
 	return c.JSON(http.StatusOK, userPlan)
@@ -52,8 +53,8 @@ func UpdateUserPlan(c echo.Context) error {
 	}
 	var userPlan model.UserPlan
 	id := c.Param("user_id")
-	result := repository.Db.Where("user_id = ?", id).First(&userPlan)
-	if result.Error != nil {
+	result := repository.Db.Where("user_id = ? AND ex_time >= ?" , id, time.Now()).Find(&userPlan)
+	if result.RowsAffected == 0 {
 		return echo.ErrNotFound
 	}
 
@@ -66,8 +67,8 @@ func UpdateUserPlan(c echo.Context) error {
 func DeleteUserPlan(c echo.Context) error {
 	var userPlan model.UserPlan
 	id := c.Param("user_id")
-	result := repository.Db.Where("user_id", id).First(&userPlan)
-	if result.Error != nil {
+	result := repository.Db.Where("user_id = ? AND ex_time >= ?" , id, time.Now()).Find(&userPlan)
+	if result.RowsAffected == 0 {
 		return echo.ErrNotFound
 	}
 
