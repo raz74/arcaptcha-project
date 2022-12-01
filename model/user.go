@@ -18,4 +18,5 @@ type User struct {
 	CreatedAt               time.Time `json:"created_at"`
 	UpdatedAt               time.Time `json:"updated_at"`
 	WebSites                []Website
+	Plan                    []Plan `gorm:"many2many:UserPlan"`
 }

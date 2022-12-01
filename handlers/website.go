@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"Arc/handlers/request"
 	"Arc/model"
 	"Arc/repository"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 )
 
 func CreateWebsite(c echo.Context) error {
-	var req model.CreateWebsiteRequest
+	var req request.CreateWebsiteRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
@@ -52,7 +53,7 @@ func GetWebsite(c echo.Context) error {
 }
 
 func UpdateWebsite(c echo.Context) error {
-	var req model.UpdateWebsiteRequest
+	var req request.UpdateWebsiteRequest
 
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
@@ -65,10 +66,10 @@ func UpdateWebsite(c echo.Context) error {
 		return echo.ErrNotFound
 	}
 
-	website.SecretKey =req.SecretKey
+	website.SecretKey = req.SecretKey
 	website.Label = req.Label
 	website.SiteKey = req.SiteKey
-	
+
 	repository.Db.Save(&website)
 	return c.JSON(http.StatusOK, website)
 }
