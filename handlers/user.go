@@ -10,6 +10,29 @@ import (
 	"github.com/labstack/echo"
 )
 
+func CreateUser(c echo.Context) error {
+	var req request.CreateUserRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.ErrBadRequest
+	}
+	hash, _ := hashPassword(req.Password)
+
+	NewUser := &model.User{
+		Password:     hash,
+		Name:         req.Name,
+		Email:        req.Email,
+		Phone:        req.Phone,
+		Company_name: req.Company_name,
+		Job_title:    req.Job_title,
+		Active:       req.Active,
+	}
+	err := repository.Db.Create(&NewUser).Error
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	return c.JSON(http.StatusOK, NewUser)
+}
+
 func GetAllUsers(c echo.Context) error {
 	var users []model.User
 	err := repository.Db.Find(&users).Error
@@ -47,7 +70,7 @@ func UpdateUser(c echo.Context) error {
 	id := c.Param("id")
 
 	user := model.User{}
-	
+
 	err := repository.Db.Where("id=?", id).Find(&user).Error
 	if err != nil {
 		return echo.ErrBadRequest
@@ -68,26 +91,4 @@ func DeleteUser(c echo.Context) error {
 	repository.Db.Delete(&user)
 
 	return c.JSON(http.StatusOK, id+"Deleted")
-}
-
-func CreateUser(c echo.Context) error {
-	var req request.CreateUserRequest
-	if err := c.Bind(&req); err != nil {
-		return echo.ErrBadRequest
-	}
-
-	NewUser := &model.User{
-		Password:     req.Password,
-		Name:         req.Name,
-		Email:        req.Email,
-		Phone:        req.Phone,
-		Company_name: req.Company_name,
-		Job_title:    req.Job_title,
-		Active:       req.Active,
-	}
-	err := repository.Db.Create(&NewUser).Error
-	if err != nil {
-		return echo.ErrBadRequest
-	}
-	return c.JSON(http.StatusOK, NewUser)
 }

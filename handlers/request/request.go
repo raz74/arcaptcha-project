@@ -3,7 +3,7 @@ package request
 import "time"
 
 type CreateUserRequest struct {
-	Password     string `json:"password"`
+	Password     string `json:"password" validate:"required"`
 	Name         string `json:"name" validate:"required len gt 2"`
 	Email        string `jason:"email" validate:"required,email"`
 	Phone        string `json:"phone" validate:"required,phone eq 11"`
@@ -21,7 +21,7 @@ type SignupRequest struct {
 
 type LoginRequest struct {
 	Name     string `json:"name" validate:"required len gt 2"`
-	Password string `json:"password"`
+	Password string `json:"password" validate:"required"`
 }
 
 type CreateWebsiteRequest struct {

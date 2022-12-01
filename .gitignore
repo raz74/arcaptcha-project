@@ -25,3 +25,5 @@ sessions
 pgadmin4.db
 db_backup
 .env
+storage
+azurecredentialcache

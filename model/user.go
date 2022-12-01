@@ -6,10 +6,10 @@ import (
 
 type User struct {
 	Password                string    `json:"password"`
-	Name                    string    `json:"name" validate:"required, len gt 2"`
+	Name                    string    `json:"name"`
 	Id                      int       `json:"id"`
-	Email                   string    `jason:"email" validate:"required,email"`
-	Phone                   string    `json:"phone" validate:"required,phone len eq 11"`
+	Email                   string    `jason:"email"`
+	Phone                   string    `json:"phone"`
 	Company_name            string    `json:"company_name"`
 	Job_title               string    `json:"job_title"`
 	Active                  bool      `json:"active"`

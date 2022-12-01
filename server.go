@@ -15,7 +15,7 @@ import (
 func main() {
 	repository.Initialize()
 	e := echo.New()
-	e.POST("/admmin/signup", handlers.Signup)
+	e.POST("/admin/signup", handlers.Signup)
 	e.POST("/admin/login", handlers.Login)
 
 	err := godotenv.Load(".env")
@@ -28,7 +28,7 @@ func main() {
 		SigningKey: []byte(os.Getenv("SECRET")),
 	}
 
-	e.Use(middleware.JWTWithConfig(config))
+	// e.Use(middleware.JWTWithConfig(config))
 	addUserHandlers(e, config)
 	addWebSiteHandlers(e, config)
 	addPlanHanders(e, config)
@@ -39,7 +39,7 @@ func main() {
 
 func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp := e.Group("/users")
-	// gp.Use(middleware.JWTWithConfig(config))
+	gp.Use(middleware.JWTWithConfig(config))
 	gp.GET("/", handlers.GetAllUsers)
 	gp.GET("/:id", handlers.GetUser)
 	gp.POST("/", handlers.CreateUser)
@@ -50,6 +50,7 @@ func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
 
 func addWebSiteHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp := e.Group("/website")
+	gp.Use(middleware.JWTWithConfig(config))
 	gp.POST("/", handlers.CreateWebsite)
 	gp.GET("/", handlers.GetAllWebsites)
 	gp.GET("/:id", handlers.GetWebsite)
@@ -59,6 +60,7 @@ func addWebSiteHandlers(e *echo.Echo, config middleware.JWTConfig) {
 
 func addPlanHanders(e *echo.Echo, config middleware.JWTConfig) {
 	gp := e.Group("/user/plan")
+	gp.Use(middleware.JWTWithConfig(config))
 	gp.POST("/", handlers.AddUserPlan)
 	gp.GET("/:user_id", handlers.GetUserPlan)
 	gp.PUT("/:user_id", handlers.UpdateUserPlan)
