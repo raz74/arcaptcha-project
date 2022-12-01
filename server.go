@@ -30,6 +30,7 @@ func main() {
 
 	addUserHandlers(e, config)
 	addWebSiteHandlers(e, config)
+	addPlanHanders(e, config)
 	
 	e.Logger.Fatal(e.Start(":3000"))
 }
@@ -45,6 +46,7 @@ func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp.DELETE("/:id", handlers.DeleteUser)
 }
 
+
 func addWebSiteHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp := e.Group("/website")
 	gp.POST("/", handlers.CreateWebsite)
@@ -52,4 +54,12 @@ func addWebSiteHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp.GET("/:id", handlers.GetWebsite)
 	gp.PUT("/:id", handlers.UpdateWebsite)
 	gp.DELETE("/:id", handlers.DeleteWebsite)
+}
+
+func addPlanHanders(e *echo.Echo, config middleware.JWTConfig) {
+	gp := e.Group("/user/plan")
+	gp.POST("/", handlers.AddUserPlan)
+	gp.GET("/:user_id", handlers.GetUserPlan)
+	gp.PUT("/:user_id", handlers.UpdateUserPlan)
+	gp.DELETE("/:user_id", handlers.DeleteUserPlan)
 }

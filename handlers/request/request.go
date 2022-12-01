@@ -24,16 +24,29 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-type HTTPError struct {
-	Status int       `json:"status"`
-	Msg    string    `json:"massage"`
-	Date   time.Time `json:"date"`
+type CreateWebsiteRequest struct {
+	UserId      int    `json:"user_id"`
+	SiteKey     string `json:"site_key"`
+	SecretKey   string `json:"secret_key"`
+	Label       string `json:"label"`
+	ChType      string `json:"ch_type"`
+	Level       int    `json:"level"`
+	FingerPrint bool   `json:"fingerprint"`
+	Brand       bool   `json:"brand"`
 }
 
-func NewHTTPEror(status int, msg string) HTTPError {
-	return HTTPError{
-		Status: status,
-		Msg:    msg,
-		Date:   time.Now(),
-	}
+type UpdateWebsiteRequest struct {
+	UserId    int    `json:"user_id"`
+	SiteKey   string `json:"site_key"`
+	SecretKey string `json:"secret_key"`
+	Label     string `json:"label"`
+	Alert     bool   `json:"alert"`
+	Subdomain bool   `json:"subdomain"`
 }
+
+type PlanRequest struct {
+	UserId int       `json:"user_id"`
+	PlanId int       `json:"plan_id"`
+	ExTime time.Time `json:"ex_Time"`
+}
+
