@@ -30,7 +30,23 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
-
+  admin:
+    build:
+      context: . # Use an image built from the specified dockerfile in the current directory.
+      dockerfile: Dockerfile
+    environment:
+      SECRET: your_secret
+      DATABASE_NAME: postgres
+      DATABASE_PASSWORD: 123456
+      DATABASE_HOST: postgres
+      PORT: 5432
+      DATABASE_USER: admin
+    ports:
+      - "3000:3000"
+    networks:
+      - arcaptcha-network
+    depends_on:
+      - postgres
 
 
 networks:
