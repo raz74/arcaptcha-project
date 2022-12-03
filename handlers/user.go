@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"Arc/authentication"
 	"Arc/handlers/request"
+	"Arc/handlers/response"
 	"Arc/model"
 	"Arc/repository"
 	"net/http"
@@ -18,25 +18,26 @@ func CreateUser(c echo.Context) error {
 	hash, _ := hashPassword(req.Password)
 
 	NewUser := &model.User{
-		Password:     hash,
-		Name:         req.Name,
-		Email:        req.Email,
-		Phone:        req.Phone,
-		Company_name: req.Company_name,
-		Job_title:    req.Job_title,
-		Active:       req.Active,
+		Password:    hash,
+		Name:        req.Name,
+		Email:       req.Email,
+		Phone:       req.Phone,
+		CompanyName: req.CompanyName,
+		JobTitle:    req.JobTitle,
+		Active:      req.Active,
 	}
+
 	err := repository.Db.Create(&NewUser).Error
 	if err != nil {
 		return echo.ErrBadRequest
 	}
-	return c.JSON(http.StatusOK, NewUser)
+
+	return c.JSON(http.StatusOK, NewUser.ToResponse())
 }
 
 func GetAllUsers(c echo.Context) error {
-	var users []model.User
+	var users []response.UserResponse
 	err := repository.Db.Find(&users).Error
-
 	if err != nil {
 		return echo.ErrBadRequest
 	}
@@ -45,15 +46,14 @@ func GetAllUsers(c echo.Context) error {
 }
 
 func GetUser(c echo.Context) error {
-	if err := authentication.ValidateToken(c); err != nil {
-		return err
-	}
+	// if err := authentication.ValidateToken(c); err != nil {
+	// 	return err
+	// }
 
-	var user model.User
+	var user response.UserResponse
 
 	id := c.Param("id")
-	err := repository.Db.Where("id = ?", id).Find(&user).Error
-
+	err := repository.Db.Where("id = ?", id).First(&user).Error
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -62,7 +62,7 @@ func GetUser(c echo.Context) error {
 }
 
 func UpdateUser(c echo.Context) error {
-	var req request.SignupRequest
+	var req response.UserResponse
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
@@ -81,14 +81,17 @@ func UpdateUser(c echo.Context) error {
 }
 
 func DeleteUser(c echo.Context) error {
-	var user model.User
+	var user response.UserResponse
 	id := c.Param("id")
 	result := repository.Db.Where("id = ?", id).First(&user)
 	if result.Error != nil {
 		return echo.ErrNotFound
 	}
 
-	repository.Db.Delete(&user)
+	err := repository.Db.Delete(&user).Error
+	if err != nil {
+		return echo.ErrBadRequest
+	}
 
 	return c.JSON(http.StatusOK, id+"Deleted")
 }

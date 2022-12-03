@@ -19,11 +19,9 @@ func CreateWebsite(c echo.Context) error {
 		UserId:    req.UserId,
 		SiteKey:   req.SiteKey,
 		SecretKey: req.SecretKey,
-		Label:     req.Label,
-		WebsiteV1: model.WebsiteV1{
-			Level: req.Level,
-		},
+		Label:     req.Label,	
 	}
+	
 	err := repository.Db.Create(&NewWebSite).Error
 	if err != nil {
 		return echo.ErrBadRequest

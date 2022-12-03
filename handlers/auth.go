@@ -11,6 +11,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func createAdmin(admin *model.Admin) error {
+	return repository.Db.Create(admin).Error
+}
+
 func Signup(c echo.Context) error {
 
 	var req request.SignupRequest
@@ -26,8 +30,8 @@ func Signup(c echo.Context) error {
 		Email:    req.Email,
 	}
 	
-	repository.CreateAdmin(&admin)
-	return c.JSON(http.StatusOK, admin)
+	createAdmin(&admin)
+	return c.JSON(http.StatusOK, "New admin signup successfully.")
 }
 
 func Login(c echo.Context) error {
@@ -44,7 +48,6 @@ func Login(c echo.Context) error {
 		return echo.ErrNotFound
 	}
 
-	// dbHash := repository.Db.Where("name = ?", request.Name).Find(admin.Password)
 	match := checkPasswordHash(request.Password, admin.Password)
 	if match != nil {
 		return c.JSON(http.StatusUnauthorized, "Password is wrong! Try again.")
