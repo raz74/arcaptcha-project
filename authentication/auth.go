@@ -48,7 +48,5 @@ func ValidateToken(c echo.Context) error {
 	Id := claims.ID
 	println(Id)
 
-	// TODO: validate
-
 	return nil
 }

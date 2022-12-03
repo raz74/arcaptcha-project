@@ -12,8 +12,6 @@ type CreateUserRequest struct {
 	Active      bool   `json:"active"`
 }
 
-
-
 type SignupRequest struct {
 	Password string `json:"password" validate:"required"`
 	Name     string `json:"name" validate:"required len gt 2"`
@@ -23,6 +21,7 @@ type SignupRequest struct {
 
 type LoginRequest struct {
 	Name     string `json:"name" validate:"required len gt 2"`
+	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }
 

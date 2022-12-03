@@ -43,7 +43,7 @@ func Login(c echo.Context) error {
 	
 	var admin model.Admin
 
-	result := repository.Db.Where("name = ?", request.Name).Find(&admin)
+	result := repository.Db.Where("email = ?", request.Email).Find(&admin)
 	if result.Error!= nil {
 		return echo.ErrNotFound
 	}
