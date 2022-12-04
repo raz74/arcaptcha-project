@@ -14,8 +14,8 @@ type Website struct {
 	AlertLimit int       `json:"alert_limit"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
-	WebsiteV1  WebsiteV1
-	Domain []Domains `gorm:"many2many`
+	WebsiteV1  []WebsiteV1
+	Domains    []Domains 
 }
 
 type WebsiteV1 struct {
@@ -27,7 +27,7 @@ type WebsiteV1 struct {
 }
 
 type Domains struct {
-	ID     int       `json:"id"`
-	WebsiteId int 	`json:"website_id" gorm:"primaryKey"`
-	Domain string `json:"domain"`
+	ID        int    `json:"id" gorm:"autoIncrement"`
+	WebsiteId int    `json:"website_id" gorm:"primaryKey"`
+	Domain    string `json:"domain"`
 }

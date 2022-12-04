@@ -32,7 +32,7 @@ func CreateWebsite(c echo.Context) error {
 
 func GetAllWebsites(c echo.Context) error {
 	var websites []model.Website
-	err := repository.Db.Find(&websites).Error
+	err := repository.Db.Preload("Domains").Preload("WebsiteV1").Find(&websites).Error
 	if err != nil {
 		return echo.ErrBadRequest
 	}

@@ -34,6 +34,7 @@ type CreateWebsiteRequest struct {
 	Level       int      `json:"level"`
 	FingerPrint bool     `json:"fingerprint"`
 	Brand       bool     `json:"brand"`
+	WebsiteV1   []string `json:"website_v1"`
 	Domains     []string `json:"domains"`
 }
 
