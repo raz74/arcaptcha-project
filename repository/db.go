@@ -25,12 +25,8 @@ func Initialize() error {
 		panic("failed to connect database")
 		
 	}
-
+	Db.AutoMigrate(&model.Admin{})
 	return nil
-}
-
-func CreateAdmin(admin *model.Admin) error {
-	return Db.Create(admin).Error
 }
 
 func getCofig() string {

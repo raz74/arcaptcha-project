@@ -1,6 +1,7 @@
 package model
 
 import (
+	"Arc/handlers/response"
 	"time"
 )
 
@@ -10,13 +11,24 @@ type User struct {
 	Id                      int       `json:"id"`
 	Email                   string    `jason:"email"`
 	Phone                   string    `json:"phone"`
-	Company_name            string    `json:"company_name"`
-	Job_title               string    `json:"job_title"`
+	CompanyName             string    `json:"company_name"`
+	JobTitle                string    `json:"job_title"`
 	Active                  bool      `json:"active"`
-	Subscribe_news          string    `json:"subscribe_news"`
+	Subscribe_news          bool      `json:"subscribe_news"`
 	Subscribe_notifications bool      `json:"subscribe_notifications"`
 	CreatedAt               time.Time `json:"created_at"`
 	UpdatedAt               time.Time `json:"updated_at"`
 	WebSites                []Website
 	Plan                    []Plan `gorm:"many2many:UserPlan"`
+}
+
+func (u *User) ToResponse() *response.UserResponse {
+	return &response.UserResponse{
+		Name:        u.Name,
+		Email:       u.Email,
+		Phone:       u.Phone,
+		CompanyName: u.CompanyName,
+		JobTitle:    u.JobTitle,
+		Active:      u.Active,
+	}
 }

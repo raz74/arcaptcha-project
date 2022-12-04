@@ -37,14 +37,17 @@ func ValidateToken(c echo.Context) error {
 		return echo.ErrUnauthorized
 	}
 	// token.Valid 
+	
+	if !token.Valid {
+		return echo.ErrUnauthorized
+	}
+
 	claims, ok := token.Claims.(*model.JwtCustomClimes)
 	if !ok {
 		return echo.ErrUnauthorized
 	}
 	Id := claims.ID
 	println(Id)
-
-	// TODO: validate
 
 	return nil
 }

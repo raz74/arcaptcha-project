@@ -15,6 +15,7 @@ type Website struct {
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 	WebsiteV1  WebsiteV1
+	Domain []Domains `gorm:"many2many`
 }
 
 type WebsiteV1 struct {
@@ -23,4 +24,10 @@ type WebsiteV1 struct {
 	Level       int    `json:"level"`
 	FingerPrint bool   `json:"fingerprint"`
 	Brand       bool   `json:"brand"`
+}
+
+type Domains struct {
+	ID     int       `json:"id"`
+	WebsiteId int 	`json:"website_id" gorm:"primaryKey"`
+	Domain string `json:"domain"`
 }
