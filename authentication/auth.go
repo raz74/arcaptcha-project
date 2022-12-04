@@ -36,6 +36,7 @@ func ValidateToken(c echo.Context) error {
 	if !ok {
 		return echo.ErrUnauthorized
 	}
+	// token.Valid 
 	claims, ok := token.Claims.(*model.JwtCustomClimes)
 	if !ok {
 		return echo.ErrUnauthorized

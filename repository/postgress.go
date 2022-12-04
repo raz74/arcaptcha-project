@@ -2,14 +2,24 @@ package repository
 
 import (
 	"Arc/model"
-	"context"
+
+	"gorm.io/gorm"
 )
 
-type postgress interface {
-	CreateUser(ctx context.Context, user *model.User) error
-	UpdateUser(ctx context.Context, user *model.User) error
-	GetUserID(ctx context.Context, id int) (*model.User, error)
-	GetUserByUsername(ctx context.Context, username string) (*model.User, error)
-	DeleteUser(ctx context.Context, id int) error
+type UserRepository interface {
+	CreateUser(user *model.User) error
+	// UpdateUser(user *model.User) error
+	// GetUserID(id int) (*model.User, error)
+	// GetUserByUsername(username string) (*model.User, error)
+	// DeleteUser(id int) error
 }
+
+type UserRepositoryImpl struct {
+	Db *gorm.DB
+}
+
+func (u *UserRepositoryImpl) CreateUser(user *model.User) error {
+	return u.Db.Create(user).Error
+}
+
 

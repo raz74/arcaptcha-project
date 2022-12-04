@@ -10,7 +10,17 @@ import (
 	"github.com/labstack/echo"
 )
 
-func CreateUser(c echo.Context) error {
+type UserHandler struct {
+	Repo repository.UserRepository
+}
+
+func NewUserHandler(r repository.UserRepository) *UserHandler {
+	return &UserHandler{
+		Repo: r,
+	}
+}
+
+func (u *UserHandler) CreateUser(c echo.Context) error {
 	var req request.CreateUserRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
@@ -26,7 +36,8 @@ func CreateUser(c echo.Context) error {
 		Job_title:    req.Job_title,
 		Active:       req.Active,
 	}
-	err := repository.Db.Create(&NewUser).Error
+	// err := repository.Db.Create(&NewUser).Error
+	err := u.Repo.CreateUser(NewUser)
 	if err != nil {
 		return echo.ErrBadRequest
 	}

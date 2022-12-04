@@ -32,21 +32,30 @@ func main() {
 	addUserHandlers(e, config)
 	addWebSiteHandlers(e, config)
 	addPlanHanders(e, config)
-	
+
 	e.Logger.Fatal(e.Start(":3000"))
 }
 
-
 func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
+	repo := &repository.UserRepositoryImpl{
+		Db: repository.Db,
+	}
+
+	h := handlers.UserHandler{
+		Repo: repo,
+	}
+	
+	// h := handlers.NewUserHandler(repo)
+
+
 	gp := e.Group("/users")
 	gp.Use(middleware.JWTWithConfig(config))
 	gp.GET("/", handlers.GetAllUsers)
 	gp.GET("/:id", handlers.GetUser)
-	gp.POST("/", handlers.CreateUser)
+	gp.POST("/", h.CreateUser)
 	gp.PUT("/:id", handlers.UpdateUser)
 	gp.DELETE("/:id", handlers.DeleteUser)
 }
-
 
 func addWebSiteHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp := e.Group("/website")
