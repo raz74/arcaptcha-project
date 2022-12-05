@@ -2,7 +2,7 @@ package model
 
 type Admin struct {
 	Id       int    `json:"id"`
-	Name     string `json:"name" validate:"required len gt 2"`
+	Name     string `json:"name"`
 	Password string `json:"password"`
-	Email    string `json:"email" gorm:"unique" validate:"required,email"`
+	Email    string `json:"email" gorm:"unique"`
 }
