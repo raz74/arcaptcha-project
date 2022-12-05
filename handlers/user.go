@@ -11,12 +11,12 @@ import (
 )
 
 type UserHandler struct {
-	Repo repository.UserRepository
+	repo repository.UserRepository
 }
 
 func NewUserHandler(r repository.UserRepository) *UserHandler {
 	return &UserHandler{
-		Repo: r,
+		repo: r,
 	}
 }
 
@@ -37,7 +37,7 @@ func (u *UserHandler) CreateUser(c echo.Context) error {
 		Active:      req.Active,
 	}
 	// err := repository.Db.Create(&NewUser).Error
-	err := u.Repo.CreateUser(NewUser)
+	err := u.repo.CreateUser(NewUser)
 	if err != nil {
 		return echo.ErrBadRequest
 	}
@@ -55,20 +55,16 @@ func GetAllUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
-func GetUser(c echo.Context) error {
-	// if err := authentication.ValidateToken(c); err != nil {
-	// 	return err
-	// }
-
-	var user response.UserResponse
-
+func (u *UserHandler) GetUser(c echo.Context) error {
 	id := c.Param("id")
-	err := repository.Db.Where("id = ?", id).First(&user).Error
+	user, err := u.repo.GetUserByID(id)
 	if err != nil {
 		return echo.ErrNotFound
 	}
 
-	return c.JSON(http.StatusOK, user)
+	response := user.ToResponse()
+
+	return c.JSON(http.StatusOK, response)
 }
 
 func UpdateUser(c echo.Context) error {

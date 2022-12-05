@@ -41,17 +41,12 @@ func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
 		Db: repository.Db,
 	}
 
-	h := handlers.UserHandler{
-		Repo: repo,
-	}
-	
-	// h := handlers.NewUserHandler(repo)
-
+	h := handlers.NewUserHandler(repo)
 
 	gp := e.Group("/users")
 	gp.Use(middleware.JWTWithConfig(config))
 	gp.GET("/", handlers.GetAllUsers)
-	gp.GET("/:id", handlers.GetUser)
+	gp.GET("/:id", h.GetUser)
 	gp.POST("/", h.CreateUser)
 	gp.PUT("/:id", handlers.UpdateUser)
 	gp.DELETE("/:id", handlers.DeleteUser)
