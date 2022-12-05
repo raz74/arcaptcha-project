@@ -18,8 +18,8 @@ type User struct {
 	Subscribe_notifications bool      `json:"subscribe_notifications"`
 	CreatedAt               time.Time `json:"created_at"`
 	UpdatedAt               time.Time `json:"updated_at"`
-	WebSites                []Website
-	Plan                    []Plan `gorm:"many2many:UserPlan"`
+	WebSites                []Website `gorm:"constraint:OnDelete:CASCADE;OnUpdate:CASCADE"`
+	Plan                    []Plan    `gorm:"many2many:UserPlan ; constraint:OnDelete:CASCADE;OnUpdate:CASCADE"`
 }
 
 func (u *User) ToResponse() *response.UserResponse {

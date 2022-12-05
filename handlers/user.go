@@ -21,7 +21,7 @@ func NewUserHandler(r repository.UserRepository) *UserHandler {
 }
 
 func (u *UserHandler) CreateUser(c echo.Context) error {
-	var req request.CreateUserRequest
+	var req request.UserRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
@@ -36,7 +36,6 @@ func (u *UserHandler) CreateUser(c echo.Context) error {
 		JobTitle:    req.JobTitle,
 		Active:      req.Active,
 	}
-	// err := repository.Db.Create(&NewUser).Error
 	err := u.repo.CreateUser(NewUser)
 	if err != nil {
 		return echo.ErrBadRequest
@@ -62,42 +61,37 @@ func (u *UserHandler) GetUser(c echo.Context) error {
 		return echo.ErrNotFound
 	}
 
-	response := user.ToResponse()
-
-	return c.JSON(http.StatusOK, response)
+	return c.JSON(http.StatusOK, user.ToResponse())
 }
 
-func UpdateUser(c echo.Context) error {
-	var req response.UserResponse
+func (u *UserHandler) UpdateUser(c echo.Context) error {
+	var req request.UserRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.ErrBadRequest
 	}
-
 	id := c.Param("id")
-
-	user := model.User{}
-
-	err := repository.Db.Where("id=?", id).Find(&user).Error
+	user, err := u.repo.GetUserByID(id)
+	if err != nil {
+		return echo.ErrNotFound
+	}
+	err = u.repo.UpdateUser(id)
 	if err != nil {
 		return echo.ErrBadRequest
 	}
-	user.Email = req.Email
-	repository.Db.Save(&user)
-	return c.JSON(http.StatusOK, id+"user successfully updated")
+	return c.JSON(http.StatusOK, user.ToResponse())
 }
 
-func DeleteUser(c echo.Context) error {
-	var user response.UserResponse
+func (u *UserHandler) DeleteUser(c echo.Context) error {
 	id := c.Param("id")
-	result := repository.Db.Where("id = ?", id).First(&user)
-	if result.Error != nil {
+	_ , err := u.repo.GetUserByID(id)
+	if err != nil {
 		return echo.ErrNotFound
 	}
 
-	err := repository.Db.Delete(&user).Error
+	err = u.repo.DeleteUser(id)
 	if err != nil {
 		return echo.ErrBadRequest
 	}
 
-	return c.JSON(http.StatusOK, id+"Deleted")
+	return c.JSON(http.StatusOK, id+" Deleted")
 }

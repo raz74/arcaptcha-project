@@ -48,8 +48,8 @@ func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp.GET("/", handlers.GetAllUsers)
 	gp.GET("/:id", h.GetUser)
 	gp.POST("/", h.CreateUser)
-	gp.PUT("/:id", handlers.UpdateUser)
-	gp.DELETE("/:id", handlers.DeleteUser)
+	gp.PUT("/:id", h.UpdateUser)
+	gp.DELETE("/:id", h.DeleteUser)
 }
 
 func addWebSiteHandlers(e *echo.Echo, config middleware.JWTConfig) {

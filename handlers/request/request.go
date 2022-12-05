@@ -2,7 +2,7 @@ package request
 
 import "time"
 
-type CreateUserRequest struct {
+type UserRequest struct {
 	Password    string `json:"password" validate:"required"`
 	Name        string `json:"name" validate:"required len gt 2"`
 	Email       string `jason:"email" validate:"required,email"`
