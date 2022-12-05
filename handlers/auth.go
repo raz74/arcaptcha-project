@@ -29,6 +29,10 @@ func Signup(c echo.Context) error {
 		Password: hash,
 		Email:    req.Email,
 	}
+	result := repository.Db.Where("email=?", req.Email).Find(&admin).RowsAffected 
+	if result > 0{
+		return c.JSON(http.StatusForbidden, "This email is already exists. Try another!")
+	}
 	
 	createAdmin(&admin)
 	return c.JSON(http.StatusOK, "New admin signup successfully.")
