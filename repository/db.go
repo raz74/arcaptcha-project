@@ -25,6 +25,10 @@ func Initialize() error {
 		panic("failed to connect database")
 		
 	}
+	// Db.AutoMigrate(&model.User{})
+	// Db.AutoMigrate(&model.UserPlan{})
+	// Db.AutoMigrate(&model.Website{})
+	// Db.AutoMigrate(&model.WebsiteV1{})
 	Db.AutoMigrate(&model.Admin{})
 	return nil
 }

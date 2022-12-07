@@ -14,9 +14,8 @@ import (
 
 func main() {
 	repository.Initialize()
+	
 	e := echo.New()
-	e.POST("/admin/signup", handlers.Signup)
-	e.POST("/admin/login", handlers.Login)
 
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -27,12 +26,10 @@ func main() {
 		Claims:     &model.JwtCustomClimes{},
 		SigningKey: []byte(os.Getenv("SECRET")),
 	}
-
-	// e.Use(middleware.JWTWithConfig(config))
 	addUserHandlers(e, config)
 	addWebSiteHandlers(e, config)
 	addPlanHanders(e, config)
-
+	addAdminHandler(e, config)
 	e.Logger.Fatal(e.Start(":3000"))
 }
 
@@ -69,4 +66,14 @@ func addPlanHanders(e *echo.Echo, config middleware.JWTConfig) {
 	gp.GET("/:user_id", handlers.GetUserPlan)
 	gp.PUT("/:user_id", handlers.UpdateUserPlan)
 	gp.DELETE("/:user_id", handlers.DeleteUserPlan)
+}
+
+func addAdminHandler(e *echo.Echo, config middleware.JWTConfig) {
+	repo := &repository.AdminRepositoryImpl{
+		Db: repository.Db,
+	}
+
+	h := handlers.NewAdminHandler(repo)
+	e.POST("/admin/signup", h.Signup)
+	e.POST("/admin/login", h.Login)
 }

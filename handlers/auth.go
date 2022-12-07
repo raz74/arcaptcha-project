@@ -11,11 +11,26 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func createAdmin(admin *model.Admin) error {
-	return repository.Db.Create(admin).Error
+type AdminHandler struct {
+	repo repository.AdminRepositiry
 }
 
-func Signup(c echo.Context) error {
+func NewAdminHandler(r repository.AdminRepositiry) *AdminHandler {
+	return &AdminHandler{
+		repo: r,
+	}
+}
+
+func (u *AdminHandler) CreateAdmin(admin *model.Admin) error {
+	// return repository.Db.Create(admin).Error
+	err := u.repo.CreateAdmin(admin)
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	return nil
+}
+
+func (u *AdminHandler) Signup(c echo.Context) error {
 
 	var req request.SignupRequest
 
@@ -24,31 +39,32 @@ func Signup(c echo.Context) error {
 	}
 	hash, _ := hashPassword(req.Password)
 		
-	admin := model.Admin{
+	Admin := model.Admin{
 		Name:     req.Name,
 		Password: hash,
 		Email:    req.Email,
 	}
-	result := repository.Db.Where("email=?", req.Email).Find(&admin).RowsAffected 
-	if result > 0{
+	err := u.repo.ChechAdminEmailUnique(req.Email)
+	if err != nil {
 		return c.JSON(http.StatusForbidden, "This email is already exists. Try another!")
 	}
 	
-	createAdmin(&admin)
+	err = u.repo.CreateAdmin(&Admin)
+	if err != nil {
+		return echo.ErrBadRequest
+	}
 	return c.JSON(http.StatusOK, "New admin signup successfully.")
 }
 
-func Login(c echo.Context) error {
+func (u *AdminHandler) Login(c echo.Context) error {
 	var request request.LoginRequest
 
 	if err := c.Bind(&request); err != nil {
 		return err
 	}
 	
-	var admin model.Admin
-
-	result := repository.Db.Where("email = ?", request.Email).Find(&admin)
-	if result.Error!= nil {
+	admin, err := u.repo.Login(request.Email)
+	if err != nil {
 		return echo.ErrNotFound
 	}
 
