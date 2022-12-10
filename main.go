@@ -4,6 +4,7 @@ import (
 	"Arc/handlers"
 	"Arc/model"
 	"Arc/repository"
+	"Arc/repository/postgres"
 	"log"
 	"os"
 
@@ -14,7 +15,7 @@ import (
 
 func main() {
 	repository.Initialize()
-	
+
 	e := echo.New()
 
 	err := godotenv.Load(".env")
@@ -28,13 +29,13 @@ func main() {
 	}
 	addUserHandlers(e, config)
 	addWebSiteHandlers(e, config)
-	addPlanHanders(e, config)
+	addPlanHandlers(e, config)
 	addAdminHandler(e, config)
 	e.Logger.Fatal(e.Start(":3000"))
 }
 
 func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
-	repo := &repository.UserRepositoryImpl{
+	repo := &postgres.UserRepositoryImpl{
 		Db: repository.Db,
 	}
 
@@ -42,7 +43,7 @@ func addUserHandlers(e *echo.Echo, config middleware.JWTConfig) {
 
 	gp := e.Group("/users")
 	gp.Use(middleware.JWTWithConfig(config))
-	gp.GET("/", handlers.GetAllUsers)
+	gp.GET("/", h.GetAllUsers)
 	gp.GET("/:id", h.GetUser)
 	gp.POST("/", h.CreateUser)
 	gp.PUT("/:id", h.UpdateUser)
@@ -59,7 +60,7 @@ func addWebSiteHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp.DELETE("/:id", handlers.DeleteWebsite)
 }
 
-func addPlanHanders(e *echo.Echo, config middleware.JWTConfig) {
+func addPlanHandlers(e *echo.Echo, config middleware.JWTConfig) {
 	gp := e.Group("/user/plan")
 	gp.Use(middleware.JWTWithConfig(config))
 	gp.POST("/", handlers.AddUserPlan)
@@ -69,7 +70,7 @@ func addPlanHanders(e *echo.Echo, config middleware.JWTConfig) {
 }
 
 func addAdminHandler(e *echo.Echo, config middleware.JWTConfig) {
-	repo := &repository.AdminRepositoryImpl{
+	repo := &postgres.AdminRepositoryImpl{
 		Db: repository.Db,
 	}
 

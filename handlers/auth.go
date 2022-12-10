@@ -4,7 +4,7 @@ import (
 	"Arc/authentication"
 	"Arc/handlers/request"
 	"Arc/model"
-	"Arc/repository"
+	"Arc/repository/postgres"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -12,10 +12,10 @@ import (
 )
 
 type AdminHandler struct {
-	repo repository.AdminRepositiry
+	repo postgres.AdminRepository
 }
 
-func NewAdminHandler(r repository.AdminRepositiry) *AdminHandler {
+func NewAdminHandler(r postgres.AdminRepository) *AdminHandler {
 	return &AdminHandler{
 		repo: r,
 	}
@@ -38,17 +38,17 @@ func (u *AdminHandler) Signup(c echo.Context) error {
 		return err
 	}
 	hash, _ := hashPassword(req.Password)
-		
+
 	Admin := model.Admin{
 		Name:     req.Name,
 		Password: hash,
 		Email:    req.Email,
 	}
-	err := u.repo.ChechAdminEmailUnique(req.Email)
+	err := u.repo.CheckAdminEmailUnique(req.Email)
 	if err != nil {
 		return c.JSON(http.StatusForbidden, "This email is already exists. Try another!")
 	}
-	
+
 	err = u.repo.CreateAdmin(&Admin)
 	if err != nil {
 		return echo.ErrBadRequest
@@ -62,8 +62,8 @@ func (u *AdminHandler) Login(c echo.Context) error {
 	if err := c.Bind(&request); err != nil {
 		return err
 	}
-	
-	admin, err := u.repo.Login(request.Email)
+
+	admin, err := u.repo.GetByEmail(request.Email)
 	if err != nil {
 		return echo.ErrNotFound
 	}
@@ -85,10 +85,10 @@ func (u *AdminHandler) Login(c echo.Context) error {
 
 func hashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-    return string(bytes), err
+	return string(bytes), err
 }
 
 func checkPasswordHash(Password, hash string) error {
-    err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(Password))
-    return err 
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(Password))
+	return err
 }

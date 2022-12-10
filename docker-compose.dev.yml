@@ -13,26 +13,11 @@ services:
       - "postgres:/var/lib/postgresql/data"
     ports:
       - "5432:5432" # "host or windows port: container port"
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - ./:/var/lib/pgadmin
-      - ./:/var/lib/pgadmin/storage/pgadmin4_pgadmin.org
-    ports:
-      - "5050:80"
-    networks:
-      - arcaptcha-network
-    restart: unless-stopped
-    depends_on:
-      - postgres
+
 
 networks:
   arcaptcha-network:
 
 volumes:
   postgres:
-  pgadmin:
+

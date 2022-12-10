@@ -2,19 +2,19 @@ package handlers
 
 import (
 	"Arc/handlers/request"
-	"Arc/handlers/response"
+	// "Arc/handlers/response"
 	"Arc/model"
-	"Arc/repository"
+	"Arc/repository/postgres"
 	"net/http"
 
 	"github.com/labstack/echo"
 )
 
 type UserHandler struct {
-	repo repository.UserRepository
+	repo postgres.UserRepository
 }
 
-func NewUserHandler(r repository.UserRepository) *UserHandler {
+func NewUserHandler(r postgres.UserRepository) *UserHandler {
 	return &UserHandler{
 		repo: r,
 	}
@@ -44,13 +44,13 @@ func (u *UserHandler) CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, NewUser.ToResponse())
 }
 
-func GetAllUsers(c echo.Context) error {
-	var users []response.UserResponse
-	err := repository.Db.Find(&users).Error
+func (u *UserHandler) GetAllUsers(c echo.Context) error {
+	// var users []response.UserResponse
+
+	users, err := u.repo.GetAllUsers()
 	if err != nil {
 		return echo.ErrBadRequest
 	}
-
 	return c.JSON(http.StatusOK, users)
 }
 
@@ -83,7 +83,7 @@ func (u *UserHandler) UpdateUser(c echo.Context) error {
 
 func (u *UserHandler) DeleteUser(c echo.Context) error {
 	id := c.Param("id")
-	_ , err := u.repo.GetUserByID(id)
+	_, err := u.repo.GetUserByID(id)
 	if err != nil {
 		return echo.ErrNotFound
 	}
