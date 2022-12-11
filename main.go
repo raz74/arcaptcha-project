@@ -14,11 +14,14 @@ import (
 )
 
 func main() {
-	repository.Initialize()
+	err := repository.Initialize()
+	if err != nil {
+		return
+	}
 
 	e := echo.New()
 
-	err := godotenv.Load(".env")
+	err = godotenv.Load(".env")
 	if err != nil {
 		log.Println("Error loading environment")
 	}
